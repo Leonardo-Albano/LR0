@@ -37,6 +37,11 @@ char* getInput() {
     }
     len -= 2;
 
+    return replaceToGrammar(input, len);
+}
+
+char* replaceToGrammar(char* input, int len){
+
     char* output = (char*)malloc((NUM_INPUT_SIZE + 1) * sizeof(char));
     if (output == NULL) {
         printf("Memory allocation failed.\n");
