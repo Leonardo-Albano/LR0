@@ -3,7 +3,7 @@
 #include <string.h>
 #include "replacer.h"
 
-const char acceptedSymbols[NUM_SYMBOLS] = {'+', '(', ')', ' '};
+const char acceptedSymbols[NUM_SYMBOLS] = {'+', '(', ')'};
 
 int isAcceptedSymbol(char c) {
     for (int i = 0; i < NUM_SYMBOLS; i++) {
@@ -12,19 +12,19 @@ int isAcceptedSymbol(char c) {
         }
     }
 
-    if ((c >= 'a' && c <= 'z')){
+    if (c >= 'a' && c <= 'z')
         return 2;
-    }
-
+    else if (c == ' ')
+        return 3;
+    
     printf("\nCRITICAL ERROR: %c isn't on alphabet.", c);
     exit(0);
 }
 
-void getInput() {
+char* getInput() {
     char input[NUM_INPUT_SIZE];
 
     printf("Enter the sequence: ");
-    // Use fgets to read the entire line including spaces
     if (fgets(input, NUM_INPUT_SIZE, stdin) == NULL) {
         printf("Error reading input.\n");
         exit(1);
@@ -35,6 +35,7 @@ void getInput() {
     if (len > 0 && input[len - 1] == '\n') {
         input[len - 1] = '\0';
     }
+    len -= 2;
 
     char* output = (char*)malloc((NUM_INPUT_SIZE + 1) * sizeof(char));
     if (output == NULL) {
@@ -45,33 +46,38 @@ void getInput() {
     int isCharSequence = 0;
     int qttOfChar = 0;
     int outputIndex = 0;
-    printf("\n");
     for(int i = 0; input[i] != '\0'; i++){
 
         switch (isAcceptedSymbol(input[i]))
         {
         case 1:
             if (isCharSequence){
-                output[outputIndex] = 'x';
-                printf("%c", output[outputIndex]);
-                outputIndex++;
+                output[outputIndex++] = 'x';
                 isCharSequence = 0;
-
-                // break;
             }
 
-            output[outputIndex] = input[i];
-            printf("%c", output[outputIndex]);
-
-            outputIndex++;
-
+            output[outputIndex++] = input[i];
             break;
         case 2:
             isCharSequence = 1;
             qttOfChar++;
+
+            if (i == len)
+            {
+                output[outputIndex++] = 'x';
+            }
+            
+            break;
+        case 3:
+            if (isCharSequence){
+                output[outputIndex++] = 'x';
+                isCharSequence = 0;
+            }
             break;
         }
+
     }
     output[outputIndex] = '\0';
 
+    return output;
 }

@@ -4,4 +4,4 @@
 extern const char acceptedSymbols[NUM_SYMBOLS];
 
 int isAcceptedSymbol(char c);
-void getInput();
+char* getInput();
