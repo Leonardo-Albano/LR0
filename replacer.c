@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "replacer.h"
 
 const char acceptedSymbols[NUM_SYMBOLS] = {'+', '(', ')', ' '};
@@ -23,7 +24,17 @@ void getInput() {
     char input[NUM_INPUT_SIZE];
 
     printf("Enter the sequence: ");
-    scanf("%s", input);
+    // Use fgets to read the entire line including spaces
+    if (fgets(input, NUM_INPUT_SIZE, stdin) == NULL) {
+        printf("Error reading input.\n");
+        exit(1);
+    }
+
+    // Remove the newline character if present
+    size_t len = strlen(input);
+    if (len > 0 && input[len - 1] == '\n') {
+        input[len - 1] = '\0';
+    }
 
     char* output = (char*)malloc((NUM_INPUT_SIZE + 1) * sizeof(char));
     if (output == NULL) {
@@ -36,26 +47,27 @@ void getInput() {
     int outputIndex = 0;
     printf("\n");
     for(int i = 0; input[i] != '\0'; i++){
-        int typeOfChar = isAcceptedSymbol(input[i]);
-        printf("%d", typeOfChar);
-        switch (typeOfChar)
+
+        switch (isAcceptedSymbol(input[i]))
         {
         case 1:
             if (isCharSequence){
                 output[outputIndex] = 'x';
+                printf("%c", output[outputIndex]);
                 outputIndex++;
                 isCharSequence = 0;
 
-                printf("%c", output[outputIndex]);
                 // break;
             }
 
             output[outputIndex] = input[i];
+            printf("%c", output[outputIndex]);
+
             outputIndex++;
 
-            printf("%c", output[outputIndex]);
             break;
         case 2:
+            isCharSequence = 1;
             qttOfChar++;
             break;
         }

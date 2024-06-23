@@ -3,5 +3,6 @@
 
 int main() {
     getInput();
+
     return 0;
 }
