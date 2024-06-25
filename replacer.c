@@ -49,7 +49,6 @@ char* replaceToGrammar(char* input, int len){
     }
 
     int isCharSequence = 0;
-    int qttOfChar = 0;
     int outputIndex = 0;
     for(int i = 0; input[i] != '\0'; i++){
 
@@ -65,7 +64,6 @@ char* replaceToGrammar(char* input, int len){
             break;
         case 2:
             isCharSequence = 1;
-            qttOfChar++;
 
             if (i == len)
             {
