@@ -10,7 +10,7 @@ int main() {
     // {
     //     printf("%c", input[i]);
     // }
-    
+    printf("\n");
     iterate(input);
     return 0;
 }
