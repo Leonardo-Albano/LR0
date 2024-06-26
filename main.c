@@ -11,10 +11,10 @@ int main()
 
     // Adiciona o símbolo de fim de entrada '$'
     int len = strlen(sequence);
-    char *inputWithEnd = (char *)malloc((len + 2) * sizeof(char)); // +1 for '$' and +1 for '\0'
+    char *inputWithEnd = (char *)malloc((len + 2) * sizeof(char)); 
     if (inputWithEnd == NULL)
     {
-        printf("Memory allocation failed.\n");
+        printf("Falha para alocar memoria.\n");
         exit(1);
     }
     strcpy(inputWithEnd, sequence);

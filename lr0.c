@@ -7,8 +7,8 @@
 
 typedef struct
 {
-    char lhs;   // Lado esquerdo da produção
-    int rhsLen; // Comprimento do lado direito da produção
+    char le;  // Gerador
+    int ld; // Quantidade a ser reduzida 
 } ProductionRule;
 
 ProductionRule rules[] = {
@@ -19,20 +19,18 @@ ProductionRule rules[] = {
 };
 
 const char *sequenceMatrix[9][7] = {
-    //    (      )       x       +       $       s       l
+//    (     )    x     +    $    s     e
     {"s2", "-", "s1", "-", "-", "g3", "-"},     // 0
     {"r2", "r2", "r2", "r2", "r2", "r2", "r2"}, // 1
     {"s2", "-", "s1", "-", "-", "g6", "g4"},    // 2
-    {"-", "-", "-", "-", "acc", "-", "-"},      // 3
-    {"-", "s5", "-", "s7", "-", "-", "-"},      // 4
+    {"-",  "-", "-", "-", "acc", "-", "-"},      // 3
+    {"-",  "s5", "-", "s7", "-", "-", "-"},      // 4
     {"r1", "r1", "r1", "r1", "r1", "r1", "r1"}, // 5
     {"r3", "r3", "r3", "r3", "r3", "r3", "r3"}, // 6
     {"s2", "-", "s1", "-", "-", "g8", "-"},     // 7
     {"r4", "r4", "r4", "r4", "r4", "r4", "r4"}  // 8
 };
 
-void shift(char input, char toState, int *stateStack, int *top);
-void reduce(int ruleIndex, int *stateStack, int *top);
 
 void iterate(char *input)
 {
@@ -43,30 +41,30 @@ void iterate(char *input)
     int i = 0;
     while (1)
     {
-        int j;
+        int inputSymbol;
         switch (input[i])
         {
         case '(':
-            j = 0;
+            inputSymbol = 0;
             break;
         case ')':
-            j = 1;
+            inputSymbol = 1;
             break;
         case 'x':
-            j = 2;
+            inputSymbol = 2;
             break;
         case '+':
-            j = 3;
+            inputSymbol = 3;
             break;
         case '$':
-            j = 4;
+            inputSymbol = 4;
             break;
         default:
-            printf("Invalid character encountered: %c\n", input[i]);
+            printf("Encontrado caracter invalido: %c\n", input[i]);
             return;
         }
-        const char *action = sequenceMatrix[stateStack[top]][j];
-        printf("%c\n", action[0]);
+        const char *action = sequenceMatrix[stateStack[top]][inputSymbol];
+
         if (action[0] == 's')
         {
             shift(input[i], action[1], stateStack, &top);
@@ -78,56 +76,54 @@ void iterate(char *input)
         }
         else if (action[0] == 'a')
         {
-            printf("Accepted\n");
+            printf("Aceito\n");
             return;
         }
         else
         {
-            printf("Error: Invalid action for state %d and input '%c'\n", stateStack[top], input[i]);
+            printf("Erro: Ação invalida para o estado %d e para a entrada '%c'\n", stateStack[top], input[i]);
             return;
         }
     }
 }
-
+// toState = ação
 void shift(char input, char toState, int *stateStack, int *top)
 {
     int newState = toState - '0'; // Corrigir a conversão de caractere para inteiro
     stateStack[++(*top)] = newState;
-    printf("Shifted to state %d on input '%c'\n", newState, input);
+    printf("Shifted para o estado %d com a entrada '%c'\n", newState, input);
 }
 
 void reduce(int ruleIndex, int *stateStack, int *top)
 {
     ProductionRule rule = rules[ruleIndex];
-    *top -= rule.rhsLen;
+    *top -= rule.ld;
     int currentState = stateStack[*top];
-    // Push the left-hand side of the production
-    stateStack[++(*top)] = currentState;
-    printf("Reduced using rule %d: %c → ...\n", ruleIndex + 1, rule.lhs);
+    stateStack[++(*top)] = currentState; // Adiciona um novo estado no topo da pilha
+    printf("Reduzido pela regra %d: %c\n", ruleIndex + 1, rule.le);
 
-    // Determine the new state after reduction
-    int lhsIndex;
-    switch (rule.lhs)
+    int ldIndex;
+    switch (rule.le)
     {
     case 'S':
-        lhsIndex = 5;
+        ldIndex = 5;
         break;
     case 'E':
-        lhsIndex = 6;
+        ldIndex = 6;
         break;
     default:
-        printf("Error: Invalid LHS in rule %d\n", ruleIndex + 1);
+        printf("Erro: regra inválida: %d\n", ruleIndex + 1);
         return;
     }
 
-    const char *gotoAction = sequenceMatrix[stateStack[*top]][lhsIndex];
+    const char *gotoAction = sequenceMatrix[stateStack[*top]][ldIndex];
     if (gotoAction[0] == 'g')
     {
         stateStack[*top] = atoi(&gotoAction[1]);
-        printf("Goto state %d\n", stateStack[*top]);
+        printf("Go to para o estado %d\n", stateStack[*top]);
     }
     else
     {
-        printf("Error: Invalid goto action for state %d and LHS '%c'\n", stateStack[*top], rule.lhs);
+        printf("Erro: Go to invalido para o estado %d e o lado esquerdo '%c'\n", stateStack[*top], rule.le);
     }
 }

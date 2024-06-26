@@ -20,7 +20,7 @@ int isAcceptedSymbol(char c)
     else if (c == ' ')
         return 3;
 
-    printf("\nCRITICAL ERROR: %c isn't on alphabet.\n", c);
+    printf("\nErro critico: %c o alfabeto é invalido.\n", c);
     exit(0);
 }
 
@@ -28,10 +28,10 @@ char *getInput()
 {
     char input[NUM_INPUT_SIZE];
 
-    printf("Enter the sequence: ");
+    printf("Digite a sequencia: ");
     if (fgets(input, NUM_INPUT_SIZE, stdin) == NULL)
     {
-        printf("Error reading input.\n");
+        printf("Erro de leitura na entrada.\n");
         exit(1);
     }
 
@@ -42,7 +42,7 @@ char *getInput()
         input[len - 1] = '\0';
     }
 
-    return replaceToGrammar(input, len); // Ajusta o comprimento corretamente
+    return replaceToGrammar(input, len);
 }
 
 char *replaceToGrammar(char *input, int len)
@@ -50,7 +50,7 @@ char *replaceToGrammar(char *input, int len)
     char *output = (char *)malloc((NUM_INPUT_SIZE + 1) * sizeof(char));
     if (output == NULL)
     {
-        printf("Memory allocation failed.\n");
+        printf("Falha para alocar memória.\n");
         exit(1);
     }
 

@@ -1,4 +1,4 @@
-#define NUM_SYMBOLS 4
+#define NUM_SYMBOLS 3
 #define NUM_INPUT_SIZE 50
 
 extern const char acceptedSymbols[NUM_SYMBOLS];
